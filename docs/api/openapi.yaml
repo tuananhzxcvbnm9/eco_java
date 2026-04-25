@@ -1,0 +1,81 @@
+openapi: 3.1.0
+info:
+  title: EcoCommerce API
+  version: 1.0.0
+servers:
+  - url: /api/v1
+paths:
+  /auth/register:
+    post:
+      summary: Register user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { type: string, format: email }
+                password: { type: string, minLength: 8 }
+      responses:
+        '200':
+          description: OK
+  /auth/login:
+    post:
+      summary: Login
+      responses:
+        '200': { description: OK }
+  /products:
+    get:
+      summary: Product list with pagination/filter/sort
+      parameters:
+        - in: query
+          name: page
+          schema: { type: integer, minimum: 0 }
+        - in: query
+          name: size
+          schema: { type: integer, minimum: 1, maximum: 100 }
+    post:
+      summary: Create product
+      security: [{ bearerAuth: [] }]
+      responses:
+        '201': { description: Created }
+  /cart/items:
+    post:
+      summary: Add item to cart
+      security: [{ bearerAuth: [] }]
+  /checkout:
+    post:
+      summary: Checkout
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          required: true
+          schema: { type: string }
+  /orders:
+    get:
+      summary: Order history
+      security: [{ bearerAuth: [] }]
+    post:
+      summary: Create order
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          required: true
+          schema: { type: string }
+  /payments/webhooks/stripe:
+    post:
+      summary: Stripe webhook callback
+  /reviews:
+    post:
+      summary: Create review after purchase
+      security: [{ bearerAuth: [] }]
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

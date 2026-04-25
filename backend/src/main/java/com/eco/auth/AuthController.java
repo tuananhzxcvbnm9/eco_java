@@ -22,8 +22,8 @@ public class AuthController {
 
   @PostMapping("/register")
   public ResponseEntity<?> register(@RequestBody RegisterRequest req) {
-    String passwordHash = encoder.encode(req.password());
-    return ResponseEntity.ok(Map.of("email", req.email(), "passwordHash", passwordHash, "status", "REGISTERED"));
+    encoder.encode(req.password());
+    return ResponseEntity.ok(Map.of("email", req.email(), "status", "REGISTERED"));
   }
 
   @PostMapping("/login")
